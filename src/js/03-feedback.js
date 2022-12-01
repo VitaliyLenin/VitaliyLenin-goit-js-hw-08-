@@ -6,19 +6,19 @@ const refs = {
   textarea: document.querySelector('.feedback-form textarea'),
 };
 
+const savedData = localStorage.getItem('feedback-form-state');
+let parsedData = JSON.parse(savedData) || {};
+
 refs.form.addEventListener('submit', onFormSubmit);
 refs.form.addEventListener('input', throttle(onFormInput, 500));
+
+onReloadPage();
 
 function onFormInput(e) {
   parsedData[e.target.name] = e.target.value;
 
   localStorage.setItem('feedback-form-state', JSON.stringify(parsedData));
 }
-
-const savedData = localStorage.getItem('feedback-form-state');
-const parsedData = JSON.parse(savedData) || {};
-
-onReloadPage();
 
 function onReloadPage() {
   if (parsedData) {
@@ -29,7 +29,9 @@ function onReloadPage() {
 
 function onFormSubmit(e) {
   e.preventDefault();
+
   console.log(parsedData);
-  localStorage.removeItem('feedback-form-state');
   e.currentTarget.reset();
+  localStorage.removeItem('feedback-form-state');
+  parsedData = {};
 }
